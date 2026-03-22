@@ -4,7 +4,7 @@ export default function Footer() {
   return (
     <footer>
       <div className="footer">
-        <p>© {year} Jeffrey Slaven. Built with React + Vite.</p>
+        <p>© {year} Jeffrey Slaven. Built with React + Vite. <a href="https://github.com/jeffreyaslaven/portfolio" target="_blank" rel="noopener noreferrer">View source</a>.</p>
         <div className="footer-links">
           <a href="mailto:jeffalslavenjr@gmail.com">Email</a>
           <a
