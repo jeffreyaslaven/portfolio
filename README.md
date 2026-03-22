@@ -30,4 +30,3 @@ npm run dev
 npm run build
 ```
 
-Upload the contents of the `dist/` folder to your web host's public root (e.g. `public_html` on Hostinger).
