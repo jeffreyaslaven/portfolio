@@ -6,18 +6,33 @@ const TOOLTIPS = {
   message: 'Min 10 characters — tell me what\'s on your mind',
 }
 
+function sanitize(value) {
+  // Strip null bytes and control characters
+  return value.replace(/[\0\x08\x0B\x0C\x0E-\x1F\x7F]/g, '')
+}
+
 function validate(form) {
   const errors = {}
-  if (!form.name.trim()) errors.name = 'Name is required'
+  if (!form.name.trim()) {
+    errors.name = 'Name is required'
+  } else if (form.name.trim().length > 100) {
+    errors.name = 'Name is too long'
+  }
   if (!form.email.trim()) {
     errors.email = 'Email is required'
+  } else if (/[\r\n]/.test(form.email)) {
+    errors.email = 'Enter a valid email address'
   } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
     errors.email = 'Enter a valid email address'
+  } else if (form.email.length > 254) {
+    errors.email = 'Email address is too long'
   }
   if (!form.message.trim()) {
     errors.message = 'Message is required'
   } else if (form.message.trim().length < 10) {
     errors.message = 'Message must be at least 10 characters'
+  } else if (form.message.length > 2000) {
+    errors.message = 'Message must be under 2000 characters'
   }
   return errors
 }
@@ -31,9 +46,17 @@ export default function Contact() {
 
   function handleChange(e) {
     const { name, value } = e.target
-    setForm((prev) => ({ ...prev, [name]: value }))
+    let filtered = sanitize(value)
+    if (name === 'name') {
+      filtered = filtered.replace(/[^a-zA-Z\s'\-]/g, '')
+    } else if (name === 'email') {
+      filtered = filtered.replace(/[\r\n\s]/g, '')
+    } else if (name === 'message') {
+      filtered = filtered.replace(/[<>]/g, '')
+    }
+    setForm((prev) => ({ ...prev, [name]: filtered }))
     if (touched[name]) {
-      setErrors(validate({ ...form, [name]: value }))
+      setErrors(validate({ ...form, [name]: filtered }))
     }
   }
 
